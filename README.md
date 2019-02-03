@@ -1,4 +1,4 @@
-#Todo
+# Todo
 REST API for your Todo list
 
 ## Core technologies
@@ -29,7 +29,7 @@ Add configuration information:
 			"host": "your_pg_host",
 			"dialect": "postgres"
 		},
-		...
+		"production": {}
 	}
 ```
 Start project
