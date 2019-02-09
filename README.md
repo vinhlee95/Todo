@@ -16,21 +16,25 @@ Create a local PostgreSQL database:
 ```
 Create Sequelize config file:
 ```bash
+	cd server
 	mkdir config
-	touch config.json
+	touch config.js
 ```
 Add configuration information:
-```json
-	{
-		"development": {
-			"username": "pg_username",
-			"password": "pg_password",
-			"database": "your_databasename",
-			"host": "your_pg_host",
-			"dialect": "postgres"
+```js
+	module.exports = {
+		development: {
+			username: 'your_user_name',
+			password: 'your_password',
+			database: 'database_name',
+			host: '127.0.0.1',
+			dialect: 'postgres',
+			logging: false, // disable logging SQL queries
 		},
-		"production": {}
-	}
+		production: {
+
+		}
+}
 ```
 Start project
 ```bash
