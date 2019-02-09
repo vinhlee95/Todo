@@ -12,7 +12,10 @@ module.exports = (app) => {
 	// Create todos
 	app.post('/api/todos', todosController.create);
 
-	// Create todo item
+	// Get a todoItem
+	app.get('/api/todos/:todoId', todosController.retrieve);
+
+	// Create todoItem
 	app.post('/api/todos/:todoId/items', todoItemsController.create)
 
 }

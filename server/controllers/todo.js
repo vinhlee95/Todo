@@ -24,4 +24,24 @@ module.exports = {
       .then(todo => res.status(201).send(todo))
       .catch(error => res.status(400).send(error));
 	},
+	async retrieve(req, res) {
+		try {
+			const todoItem = await Todo.findByPk(
+				req.params.todoId,
+				{
+					include: [{
+						model: TodoItem,
+						as: 'items'
+					}]
+				}
+			);
+			if(todoItem) {
+				res.status(200).send(todoItem)
+			} else {
+				res.status(404).send('Todo not found')
+			}
+		} catch(error) {
+			res.status(500).send(error)
+		}
+	}
 };
