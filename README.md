@@ -34,7 +34,7 @@ Add configuration information:
 		production: {
 
 		}
-}
+	}
 ```
 Start project
 ```bash
