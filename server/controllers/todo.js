@@ -65,11 +65,34 @@ module.exports = {
 				if(!title) {
 					res.status(400).send('Bad title');
 				} else {
-					updatedTodo.update({ title });
-					res.status(201).send(updatedTodo);
+					try {
+						updatedTodo.update({ title });
+						res.status(201).send(updatedTodo);
+					} catch(error) {
+						res.status(500).send(error);
+					}
 				}
 			} else {
 				res.status(404).send('Todo not found');
+			}
+		} catch(error) {
+			res.status(500).send(error);
+		}
+	},
+
+	async delete(req, res) {
+		try {
+			const deletedTodo = await Todo.findByPk(req.params.todoId);
+			if(deletedTodo) {
+				try {
+					deletedTodo.destroy();
+					res.status(200).send('Successed')
+				} catch(error) {
+					res.status(500).send(error);
+				}
+
+			} else {
+				res.status(404).send('Todo not found')
 			}
 		} catch(error) {
 			res.status(500).send(error);

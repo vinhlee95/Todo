@@ -15,6 +15,9 @@ module.exports = (app) => {
 	// Get a todo
 	app.get('/api/todos/:todoId', todosController.retrieve);
 
+	// Delete a todo
+	app.delete('/api/todos/:todoId', todosController.delete);
+
 	// Update a todo
 	app.put('/api/todos/:todoId', todosController.update);
 
