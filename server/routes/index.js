@@ -1,10 +1,25 @@
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
+
+// Controllers
 const todosController = require('../controllers').todos;
 const todoItemsController = require('../controllers').todoItems;
+const userController = require('../controllers').users;
 
 module.exports = (app) => {
-	app.get('/api', (req, res) => res.status(200).send({
-		message: 'Welcome to the API',
-	}));
+	app.post('/api/signup', passport.authenticate('signup', { session: false }), userController.signup);
+
+	app.post('/api/login', userController.login);
+
+	//Displays information tailored according to the logged in user
+	app.get('/api', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+		//We'll just send back the user details and the token
+		res.json({
+			message : 'You made it to the secure route',
+			user : req.user,
+			token : req.query.secret_token
+		})
+	});
 
 	// Get all todos
 	app.get('/api/todos', todosController.get);
