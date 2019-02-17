@@ -7,7 +7,14 @@ module.exports = (sequelize, DataTypes) => {
 		password: DataTypes.STRING,
 		email: DataTypes.STRING,
 		avatar_url: DataTypes.STRING,
-	}, {});
+	}, {
+		indexes: [
+			{
+				unique: true,
+				fields: ['email', 'username']
+			}
+		]
+	});
 
 	User.beforeSave(async (user, options) => {
 		try {
@@ -18,8 +25,8 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	});
 
-	User.prototype.isValidPassword = async (password, userPassword) => {
-		const compare = await bcrypt.compare(password, userPassword);
+	User.prototype.isValidPassword = async (providedPassword, userPassword) => {
+		const compare = await bcrypt.compare(providedPassword, userPassword);
 		return compare;
 	}
 

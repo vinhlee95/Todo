@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
 		Todo.hasMany(models.TodoItem, {
 			as: 'items',
 		})
+
+		Todo.belongsTo(models.User, {
+			onDelete: 'CASCADE',
+			allowNull: false,
+		})
 	};
 
   return Todo;

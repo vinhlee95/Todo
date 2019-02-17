@@ -12,12 +12,11 @@ const ExtractJWT = require('passport-jwt').ExtractJwt;
 const User = require('../models').User;
 
 //This verifies that the token sent by the user is valid
-passport.use(new JWTstrategy({
-  //secret we used to sign our JWT
-  secretOrKey : 'top_secret',
-  //we expect the user to send the token as a query paramater with the name 'secret_token'
-  jwtFromRequest : ExtractJWT.fromUrlQueryParameter('secret_token')
-}, async (token, done) => {
+let options = {}
+options.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken()
+options.secretOrKey = 'login_token'
+
+passport.use(new JWTstrategy(options, async (token, done) => {
   try {
     //Pass the user details to the next middleware
     return done(null, token.user);
@@ -31,14 +30,14 @@ passport.use('signup', new localStrategy({
   usernameField : 'email',
   passwordField : 'password'
 }, async (email, password, done) => {
-    try {
-      //Save the information provided by the user to the the database
-      const user = await User.create({ email, password });
-      //Send the user information to the next middleware
-      return done(null, user);
-    } catch (error) {
-      done(error);
-    }
+	try {
+		//Save the information provided by the user to the the database
+		const user = await User.create({ email, password });
+		//Send the user information to the next middleware
+		return done(null, user, { message: 'Successfully created user' });
+	} catch (error) {
+		done(error);
+	}
 }));
 
 //Create a passport middleware to handle User login
@@ -49,6 +48,7 @@ passport.use('login', new localStrategy(
 	},
 	async (email, password, done) => {
 		try {
+
 			//Find the user associated with the email provided by the user
 			let user = await User.findOne({
 				where: {

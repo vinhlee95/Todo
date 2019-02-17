@@ -3,13 +3,19 @@ const TodoItem = require('../models').TodoItem;
 
 module.exports = {
 	get(req, res) {
+		const userId = req.user.id;
 		return Todo
-			.findAll({
-				include: [{
-					model: TodoItem,
-					as: 'items',
-				}],
-			})
+			.findAll(
+				{
+					where: { UserId: userId }
+				},
+				{
+					include: [{
+						model: TodoItem,
+						as: 'items',
+					}],
+				}
+			)
 			.then(todos => res.status(200).send(todos))
 			.catch(error => {
 				console.log(error);
@@ -20,7 +26,8 @@ module.exports = {
   create(req, res) {
     return Todo
       .create({
-        title: req.body.title,
+				title: req.body.title,
+				UserId: req.user.id,
       })
       .then(todo => res.status(201).send(todo))
       .catch(error => res.status(500).send(error));
