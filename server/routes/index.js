@@ -1,15 +1,14 @@
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
 
 // Controllers
 const todosController = require('../controllers').todos;
 const todoItemsController = require('../controllers').todoItems;
-const userController = require('../controllers').users;
+const authController = require('../controllers').auth;
 
 module.exports = (app) => {
-	app.post('/api/signup', passport.authenticate('signup', { session: false }), userController.signup);
+	app.post('/api/signup', authController.signup);
 
-	app.post('/api/login', userController.login);
+	app.post('/api/login', authController.login);
 
 	//Displays information tailored according to the logged in user
 	app.get('/api', passport.authenticate('jwt', {session: false}), (req, res, next) => {
@@ -22,10 +21,10 @@ module.exports = (app) => {
 	});
 
 	// Get all todos
-	app.get('/api/todos', todosController.get);
+	app.get('/api/todos', passport.authenticate('jwt', {session: false}), todosController.get);
 
 	// Create todos
-	app.post('/api/todos', todosController.create);
+	app.post('/api/todos', passport.authenticate('jwt', {session: false}), todosController.create);
 
 	// Get a todo
 	app.get('/api/todos/:todoId', todosController.retrieve);

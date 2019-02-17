@@ -3,7 +3,7 @@
  */
 
 const passport = require('passport');
-const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 // Utils
 const {createErrorMessage} = require('../utils');
@@ -15,20 +15,34 @@ module.exports = {
 	 * Just send back the user as passport already handled signing up process
 	 *
 	 */
-	async signup(req, res) {
-		res.json({
-			message : 'Signup successful',
-			user : req.user
-		});
+	async signup(req, res, next) {
+		passport.authenticate('signup', async (error, user, info) => {
+			try {
+				if(error) {
+					return next(error);
+				}
+
+				return res.status(201).send({
+					user,
+					message: info.message,
+				});
+			} catch(error) {
+				return next(error);
+			}
+		})(req, res, next)
 	},
 
 
+	/**
+	 * Log user in
+	 *
+	 */
 	async login(req, res, next) {
-		passport.authenticate('login', async (err, user, info) => {
+		passport.authenticate('login', async (error, user, info) => {
 			try {
-				if(err){
-					const error = createErrorMessage(500, 'Something went wrong!');
-					return next(error)
+				if(error){
+					const err = createErrorMessage(500, 'Something went wrong!');
+					return next(err)
 				}
 
 				if(!user) {
@@ -38,11 +52,9 @@ module.exports = {
 
 				req.login(user, { session : false }, async (error) => {
 					if( error ) return next(error)
-					//We don't want to store the sensitive information such as the
-					//user password in the token so we pick only the email and id
-					const body = { _id : user._id, email : user.email };
-					//Sign the JWT token and populate the payload with the user email and id
-					const token = jwt.sign({ user : body },'top_secret');
+
+					const body = { id: user.id, email : user.email };
+					const token = jwt.sign({ user : body }, 'login_token');
 					//Send back the token to the user
 					return res.json({ token });
 				});

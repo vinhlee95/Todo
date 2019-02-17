@@ -1,9 +1,9 @@
 const todos = require('./todo');
 const todoItems = require('./todo-item');
-const users = require('./user');
+const auth = require('./auth');
 
 module.exports = {
 	todos,
 	todoItems,
-	users,
+	auth,
 };
